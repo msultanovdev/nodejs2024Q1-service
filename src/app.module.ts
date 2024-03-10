@@ -12,14 +12,18 @@ import { TrackService } from './services/track/track.service';
 import { ArtistModule } from './modules/artist/artist.module';
 import { ArtistController } from './controllers/artist/artist.controller';
 import { ArtistService } from './services/artist/artist.service';
+import { AlbumModule } from './modules/album/album.module';
+import { AlbumService } from './services/album/album.service';
+import { AlbumController } from './controllers/album/album.controller';
 
 @Module({
-  imports: [UserModule, DatabaseModule, TrackModule, ArtistModule],
+  imports: [UserModule, DatabaseModule, TrackModule, ArtistModule, AlbumModule],
   controllers: [
     AppController,
     UserController,
     TrackController,
     ArtistController,
+    AlbumController,
   ],
   providers: [
     AppService,
@@ -27,6 +31,7 @@ import { ArtistService } from './services/artist/artist.service';
     DatabaseService,
     TrackService,
     ArtistService,
+    AlbumService,
   ],
 })
 export class AppModule {}
