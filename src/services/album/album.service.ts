@@ -1,7 +1,7 @@
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { CreateAlbumDto } from '../../dto/create.album.dto';
 import { UpdateAlbumDto } from '../../dto/update.album.dto';
-import { DatabaseService } from '../../database/database/database.service';
+import { DatabaseService } from '../../database/database.service';
 import { validate as uuidValidate } from 'uuid';
 import { validate } from 'class-validator';
 

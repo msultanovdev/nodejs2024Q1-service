@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from '../../dto/create.track.dto';
 import { UpdateTrackDto } from '../../dto/update.track.dto';
-import { DatabaseService } from '../../database/database/database.service';
+import { DatabaseService } from '../../database/database.service';
 import { validate as uuidValidate } from 'uuid';
 import { validate } from 'class-validator';
 

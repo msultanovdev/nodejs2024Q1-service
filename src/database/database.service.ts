@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../../dto/create.user.dto';
-import { CreateTrackDto } from '../../dto/create.track.dto';
-import { UpdateTrackDto } from '../../dto/update.track.dto';
-import { User } from '../../modules/user/user.model';
+import { CreateUserDto } from '../dto/create.user.dto';
+import { CreateTrackDto } from '../dto/create.track.dto';
+import { UpdateTrackDto } from '../dto/update.track.dto';
+import { User } from '../modules/user/user.model';
 import { Track } from 'src/modules/track/track.model';
 import { Artist } from 'src/modules/artist/artist.model';
 import { CreateArtistDto } from 'src/dto/create.artist.dto';
@@ -10,6 +10,7 @@ import { UpdateArtistDto } from 'src/dto/update.artist.dto';
 import { Album } from 'src/modules/album/album.model';
 import { CreateAlbumDto } from 'src/dto/create.album.dto';
 import { UpdateAlbumDto } from 'src/dto/update.album.dto';
+import { Fav } from 'src/modules/favs/fav.model';
 const initUsers = [
   new User({ login: 'Amin', password: 'qwerty' }),
   new User({ login: 'Jamol', password: '12345' }),
@@ -41,11 +42,13 @@ export class DatabaseService {
   tracksList: Track[];
   artistsList: Artist[];
   albumsList: Album[];
+  favouritesList: Fav;
   constructor() {
     this.usersList = initUsers;
     this.tracksList = initTracks;
     this.artistsList = initArtits;
     this.albumsList = initAlbums;
+    this.favouritesList = new Fav();
   }
   getAllUsers() {
     return this.usersList;
@@ -86,6 +89,7 @@ export class DatabaseService {
   }
   deleteTrack(id: string) {
     this.tracksList = this.tracksList.filter((track) => track.id !== id);
+    this.favouritesList.removeTrack(id);
   }
 
   getAllArtists() {
@@ -104,7 +108,11 @@ export class DatabaseService {
   }
   deleteArtist(id: string) {
     this.artistsList = this.artistsList.filter((artist) => artist.id !== id);
+    this.removeArtistIdFromTracks(id);
+    this.removeArtistIdFromAlbums(id);
+    this.favouritesList.removeArtist(id);
   }
+
   getAllAlbums() {
     return this.albumsList;
   }
@@ -121,5 +129,32 @@ export class DatabaseService {
   }
   deleteAlbum(id: string) {
     this.albumsList = this.albumsList.filter((album) => album.id !== id);
+    this.removeAlbumIdFromTracks(id);
+    this.favouritesList.removeAlbum(id);
+  }
+
+  getAllFavourites() {
+    const favs = this.favouritesList.getAllFavourites();
+    return {
+      artists: favs.artists.map((artistId) => this.getArtistById(artistId)),
+      albums: favs.albums.map((albumId) => this.getAlbumById(albumId)),
+      tracks: favs.tracks.map((trackId) => this.getTrackById(trackId)),
+    };
+  }
+
+  removeAlbumIdFromTracks(albumId: string) {
+    this.tracksList.forEach((track) => {
+      if (track.albumId === albumId) track.albumId = null;
+    });
+  }
+  removeArtistIdFromTracks(artistId: string) {
+    this.tracksList.forEach((track) => {
+      if (track.artistId === artistId) track.artistId = null;
+    });
+  }
+  removeArtistIdFromAlbums(artistId: string) {
+    this.albumsList.forEach((album) => {
+      if (album.artistId === artistId) album.artistId = null;
+    });
   }
 }
