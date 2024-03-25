@@ -1,21 +1,13 @@
-FROM node:20
-
+FROM node:20-alpine3.18
 
 WORKDIR /app
 
+COPY package.json package-lock.json* ./
 
-COPY package*.json ./
-
-RUN npm install
-
+RUN npm install && npm cache clean --force
 
 COPY . .
 
+EXPOSE ${PORT}
 
-RUN npm run build
-
-
-EXPOSE 4000
-
-
-CMD ["npm", "run", "start:prod"]
+CMD [ "npm", "run", "start:dev" ]
