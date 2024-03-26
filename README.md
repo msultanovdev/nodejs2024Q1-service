@@ -1,61 +1,39 @@
 # Home Library Service
 
+This README file provides a brief overview of the Home Library Service project, including installation instructions, usage guidelines, and details about REST endpoints. 
+
+## Used Technologies
+* Node.js
+* Nest.js
+* PostgreSQL
+* Prisma
+* Docker
+* Jest
+
+
 ## Prerequisites
-
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-
-## Downloading
-
+1. Clone this repository 
 ```
 git clone {repository URL}
 ```
-
-## Installing NPM modules
-
+2. Rename .env.example to .env
+3. Install NPM modules
 ```
 npm install
 ```
-
-## Running application
-
+3. Run Docker
 ```
-npm start
+npm run docker
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ## Testing
-
-After application running open new terminal and enter:
-
 To run all tests without authorization
-
 ```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
+npm run docker:test
 ```
 
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
+## Auto-fix and format
 
 ```
 npm run lint
@@ -65,106 +43,40 @@ npm run lint
 npm run format
 ```
 
-### Debugging in VSCode
+## OpenAPI documentation
+After starting the app on port (4000 as default) you can open
+in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
-
-Users (/user route)
-GET /user:
-
-Retrieve all users.
-Response: Status code 200 and all user records.
-GET /user/:id:
-
-Retrieve a single user by ID.
-Parameters:
-id: User ID.
-Response:
-Status code 200 and the record with matching id if it exists.
-Status code 400 and corresponding message if id is invalid.
-Status code 404 and corresponding message if record with id doesn't exist.
-POST /user:
-
-Create a new user.
-Request Body (CreateUserDto):
-json
-Copy code
-{
-  "login": "string",
-  "password": "string"
-}
-Response:
-Status code 201 and newly created record if request is valid.
-Status code 400 and corresponding message if request body does not contain required fields.
-PUT /user/:id:
-
-Update a user's password.
-Parameters:
-id: User ID.
-Request Body (UpdatePasswordDto):
-json
-Copy code
-{
-  "oldPassword": "string",
-  "newPassword": "string"
-}
-Response:
-Status code 200 and updated record if request is valid.
-Status code 400 and corresponding message if id is invalid.
-Status code 404 and corresponding message if record with id doesn't exist.
-Status code 403 and corresponding message if oldPassword is wrong.
-DELETE /user/:id:
-
-Delete a user.
-Parameters:
-id: User ID.
-Response:
-Status code 204 if the record is found and deleted.
-Status code 400 and corresponding message if id is invalid.
-Status code 404 and corresponding message if record with id doesn't exist.
-Tracks (/track route)
-GET /track:
-
-Retrieve all tracks.
-Response: Status code 200 and all track records.
-GET /track/:id:
-
-Retrieve a single track by ID.
-Parameters:
-id: Track ID.
-Response:
-Status code 200 and the record with matching id if it exists.
-Status code 400 and corresponding message if id is invalid.
-Status code 404 and corresponding message if record with id doesn't exist.
-POST /track:
-
-Create a new track.
-Request Body: (details not provided)
-Response:
-Status code 201 and newly created record if request is valid.
-Status code 400 and corresponding message if request body does not contain required fields.
-PUT /track/:id:
-
-Update track info.
-Parameters:
-id: Track ID.
-Request Body: (details not provided)
-Response: (details not provided)
-DELETE /track/:id:
-
-Delete a track.
-Parameters:
-id: Track ID.
-Response: (details not provided)
-Artists (/artist route)
-(Instructions for Artist routes continue in the same pattern as Users and Tracks)
-
-Albums (/album route)
-(Instructions for Album routes continue in the same pattern as Users, Tracks, and Artists)
-
-Favorites
-(Instructions for Favorites routes continue in the same pattern as Users, Tracks, Artists, and Albums)
-
-Please refer to the provided documentation for detailed information on each endpoint, including request bodies and responses.
+## REST Endpoints
+### Users
+- GET /user: Get all users
+- GET /user/:id: Get a single user by ID
+- POST /user: Create a user
+- PUT /user/:id: Update a user's password
+- DELETE /user/:id: Delete a user
+### Tracks
+- GET /track: Get all tracks
+- GET /track/:id: Get a single track by ID
+- POST /track: Create a new track
+- PUT /track/:id: Update track info
+- DELETE /track/:id: Delete a track
+### Artists
+- GET /artist: Get all artists
+- GET /artist/:id: Get a single artist by ID
+- POST /artist: Create a new artist
+- PUT /artist/:id: Update artist info
+- DELETE /artist/:id: Delete an artist
+### Albums
+- GET /album: Get all albums
+- GET /album/:id: Get a single album by ID
+- POST /album: Create a new album
+- PUT /album/:id: Update album info
+- DELETE /album/:id: Delete an album
+### Favorites
+- GET /favs: Get all favorites
+- POST /favs/track/:id: Add track to favorites
+- DELETE /favs/track/:id: Delete track from favorites
+- POST /favs/album/:id: Add album to favorites
+- DELETE /favs/album/:id: Delete album from favorites
+- POST /favs/artist/:id: Add artist to favorites
+- DELETE /favs/artist/:id: Delete artist from favorites
