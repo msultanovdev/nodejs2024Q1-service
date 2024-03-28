@@ -8,6 +8,8 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  ValidationPipe,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AlbumService } from '../../services/album/album.service';
 import { CreateAlbumDto } from '../../dto/create.album.dto';
@@ -19,7 +21,10 @@ export class AlbumController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(@Body() createAlbumDto: CreateAlbumDto) {
+  create(
+    @Body(new ValidationPipe({ whitelist: true }))
+    createAlbumDto: CreateAlbumDto,
+  ) {
     return this.albumService.create(createAlbumDto);
   }
 
@@ -34,7 +39,11 @@ export class AlbumController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id,
+    @Body(new ValidationPipe({ whitelist: true }))
+    updateAlbumDto: UpdateAlbumDto,
+  ) {
     return this.albumService.update(id, updateAlbumDto);
   }
 

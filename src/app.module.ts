@@ -18,6 +18,8 @@ import { AlbumController } from './controllers/album/album.controller';
 import { FavsModule } from './modules/favs/favs.module';
 import { FavsService } from './services/favs/favs.service';
 import { FavsController } from './controllers/favs/favs.controller';
+import { PrismaClientModule } from './modules/prisma/prisma.module';
+import { PrismaClientService } from './services/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { FavsController } from './controllers/favs/favs.controller';
     ArtistModule,
     AlbumModule,
     FavsModule,
+    PrismaClientModule,
+    PrismaClientService,
   ],
   controllers: [
     AppController,
@@ -44,6 +48,7 @@ import { FavsController } from './controllers/favs/favs.controller';
     ArtistService,
     AlbumService,
     FavsService,
+    PrismaClientService,
   ],
 })
 export class AppModule {}

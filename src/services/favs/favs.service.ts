@@ -1,25 +1,29 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
+import { Fav } from 'src/modules/favs/fav.model';
 import { validate as uuidValidate } from 'uuid';
 
 @Injectable()
 export class FavsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  getAll() {
-    return this.databaseService.getAllFavourites();
+  async getAll() {
+    return await this.databaseService.getAllFavouritesFormatted();
   }
 
-  addArtist(id: string) {
+  async addArtist(id: string) {
     if (uuidValidate(id)) {
-      const artistDoesExist = this.databaseService.getArtistById(id);
+      const artistDoesExist = await this.databaseService.getArtistById(id);
       if (artistDoesExist) {
-        const artistAlreadyInFavs =
-          this.databaseService.favouritesList.getArtistById(id);
+        const favs: Fav = await this.databaseService.getAllFavourites();
+        const artistAlreadyInFavs = favs.artists.find(
+          (artistId) => artistId === id,
+        );
+
         if (artistAlreadyInFavs) {
           throw new HttpException('Artist is in favs', HttpStatus.CONFLICT);
         } else {
-          this.databaseService.favouritesList.addArtist(id);
+          await this.databaseService.addArtistToFavs(id);
           return `${id} artist is added to favourites`;
         }
       } else {
@@ -29,12 +33,12 @@ export class FavsService {
       throw new HttpException('Invalid id (not uuid)', HttpStatus.BAD_REQUEST);
     }
   }
-  removeArtist(id: string) {
+  async removeArtist(id: string) {
     if (uuidValidate(id)) {
-      const artistIsInFavs =
-        this.databaseService.favouritesList.getArtistById(id);
+      const favs: Fav = await this.databaseService.getAllFavourites();
+      const artistIsInFavs = favs.artists.find((artistId) => artistId === id);
       if (artistIsInFavs) {
-        this.databaseService.favouritesList.removeArtist(id);
+        await this.databaseService.removeArtistFromFavs(id);
         return `Artist with ID: ${id} is removed from favourites`;
       } else {
         throw new HttpException(
@@ -47,16 +51,18 @@ export class FavsService {
     }
   }
 
-  addAlbum(id: string) {
+  async addAlbum(id: string) {
     if (uuidValidate(id)) {
-      const albumDoesExist = this.databaseService.getAlbumById(id);
+      const albumDoesExist = await this.databaseService.getAlbumById(id);
       if (albumDoesExist) {
-        const albumAlreadyInFavs =
-          this.databaseService.favouritesList.getAlbumById(id);
+        const favs: Fav = await this.databaseService.getAllFavourites();
+        const albumAlreadyInFavs = favs.albums.find(
+          (albumId) => albumId === id,
+        );
         if (albumAlreadyInFavs) {
           throw new HttpException('Album is in favs', HttpStatus.CONFLICT);
         } else {
-          this.databaseService.favouritesList.addAlbum(id);
+          await this.databaseService.addAlbumToFavs(id);
           return `Album with ID: ${id} is added to favourites`;
         }
       } else {
@@ -66,12 +72,12 @@ export class FavsService {
       throw new HttpException('Invalid id (not uuid)', HttpStatus.BAD_REQUEST);
     }
   }
-  removeAlbum(id: string) {
+  async removeAlbum(id: string) {
     if (uuidValidate(id)) {
-      const albumIsInFavs =
-        this.databaseService.favouritesList.getAlbumById(id);
+      const favs: Fav = await this.databaseService.getAllFavourites();
+      const albumIsInFavs = favs.albums.find((albumId) => albumId === id);
       if (albumIsInFavs) {
-        this.databaseService.favouritesList.removeAlbum(id);
+        await this.databaseService.removeAlbumFromFavs(id);
         return `Album with ID: ${id} is removed from favourites`;
       } else {
         throw new HttpException(`Album is not found`, HttpStatus.NOT_FOUND);
@@ -81,19 +87,21 @@ export class FavsService {
     }
   }
 
-  addTrack(id: string) {
+  async addTrack(id: string) {
     if (uuidValidate(id)) {
-      const trackDoesExist = this.databaseService.getTrackById(id);
-      if (trackDoesExist) {
-        const trackAlreadyInFavs =
-          this.databaseService.favouritesList.getTrackById(id);
+      const isTrackInFav = await this.databaseService.getTrackById(id);
+      if (isTrackInFav) {
+        const favs: Fav = await this.databaseService.getAllFavourites();
+        const trackAlreadyInFavs = favs.tracks.find(
+          (trackId) => trackId === id,
+        );
         if (trackAlreadyInFavs) {
           throw new HttpException(
             'Track is existing in favs',
             HttpStatus.CONFLICT,
           );
         } else {
-          this.databaseService.favouritesList.addTrack(id);
+          await this.databaseService.addTrackToFavs(id);
           return `Track with ID: ${id} is added to favourites`;
         }
       } else {
@@ -103,12 +111,12 @@ export class FavsService {
       throw new HttpException('Invalid id (not uuid)', HttpStatus.BAD_REQUEST);
     }
   }
-  removeTrack(id: string) {
+  async removeTrack(id: string) {
     if (uuidValidate(id)) {
-      const trackIsInFavs =
-        this.databaseService.favouritesList.getTrackById(id);
+      const favs: Fav = await this.databaseService.getAllFavourites();
+      const trackIsInFavs = favs.tracks.find((trackId) => trackId === id);
       if (trackIsInFavs) {
-        this.databaseService.favouritesList.removeTrack(id);
+        await this.databaseService.removeTrackFromFavs(id);
         return `Track with ID: ${id} is removed from favourites`;
       } else {
         throw new HttpException(

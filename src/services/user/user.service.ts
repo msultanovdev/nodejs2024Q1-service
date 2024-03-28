@@ -49,10 +49,10 @@ export class UserService {
         throw new HttpException(message, HttpStatus.BAD_REQUEST);
       }
 
-      const user = this.databaseService.getUserById(id);
+      const user = await this.databaseService.getUserById(id);
       if (user) {
         if (dto.oldPassword === user.password) {
-          const res = this.databaseService.updateUser(user, dto.newPassword);
+          const res = this.databaseService.updateUser(user.id, dto.newPassword);
           return res;
         }
         throw new HttpException('Invalid password', HttpStatus.FORBIDDEN);

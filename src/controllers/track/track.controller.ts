@@ -8,6 +8,8 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  ValidationPipe,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TrackService } from '../../services/track/track.service';
 import { CreateTrackDto } from '../../dto/create.track.dto';
@@ -19,7 +21,10 @@ export class TrackController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto) {
+  create(
+    @Body(new ValidationPipe({ whitelist: true }))
+    createTrackDto: CreateTrackDto,
+  ) {
     return this.trackService.create(createTrackDto);
   }
 
@@ -34,7 +39,11 @@ export class TrackController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id,
+    @Body(new ValidationPipe({ whitelist: true }))
+    updateTrackDto: UpdateTrackDto,
+  ) {
     return this.trackService.update(id, updateTrackDto);
   }
 

@@ -8,6 +8,8 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  ValidationPipe,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ArtistService } from '../../services/artist/artist.service';
 import { CreateArtistDto } from '../../dto/create.artist.dto';
@@ -19,8 +21,11 @@ export class ArtistController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(@Body() createArtistDto: CreateArtistDto) {
-    return this.artistService.create(createArtistDto);
+  create(
+    @Body(new ValidationPipe({ whitelist: true }))
+    createArtirstDto: CreateArtistDto,
+  ) {
+    return this.artistService.create(createArtirstDto);
   }
 
   @Get()
@@ -34,7 +39,11 @@ export class ArtistController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id,
+    @Body(new ValidationPipe({ whitelist: true }))
+    updateArtistDto: UpdateArtistDto,
+  ) {
     return this.artistService.update(id, updateArtistDto);
   }
 

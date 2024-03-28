@@ -41,7 +41,7 @@ export class TrackService {
   async update(id: string, updateTrackDto: UpdateTrackDto) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const track = this.databaseService.getTrackById(id);
+      const track = await this.databaseService.getTrackById(id);
       if (track) {
         const dto = new UpdateTrackDto(updateTrackDto);
 
@@ -50,8 +50,7 @@ export class TrackService {
         if (validationErrors.length > 0) {
           throw new HttpException('Something wrong :(', HttpStatus.BAD_REQUEST);
         }
-        track.updateTrack(dto);
-        return track;
+        return await this.databaseService.updateTrack(track.id, dto);
       }
       throw new HttpException(
         `Track with ${id} was not found`,

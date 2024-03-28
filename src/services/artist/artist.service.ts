@@ -50,8 +50,6 @@ export class ArtistService {
         if (validationErrors.length > 0) {
           throw new HttpException('Something wrong :(', HttpStatus.BAD_REQUEST);
         }
-        artist.updateArtist(dto);
-        return artist;
       }
       throw new HttpException(
         `Artist with ${id} was not found in database`,
