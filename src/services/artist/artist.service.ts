@@ -17,18 +17,18 @@ export class ArtistService {
     if (validationErrors.length > 0) {
       throw new HttpException('Something wrong :(', HttpStatus.BAD_REQUEST);
     }
-    const artist = this.databaseService.createArtist(dto);
+    const artist = await this.databaseService.createArtist(dto);
     return artist;
   }
 
-  getAll() {
-    return this.databaseService.getAllArtists();
+  async getAll() {
+    return await this.databaseService.getAllArtists();
   }
 
-  getOne(id: string) {
+  async getOne(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const artist = this.databaseService.getArtistById(id);
+      const artist = await this.databaseService.getArtistById(id);
       if (artist) return artist;
       throw new HttpException(
         `Artist with ${id} was not found in database`,
@@ -41,7 +41,7 @@ export class ArtistService {
   async update(id: string, updateArtistDto: UpdateArtistDto) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const artist = this.databaseService.getArtistById(id);
+      const artist = await this.databaseService.getArtistById(id);
       if (artist) {
         const dto = new UpdateArtistDto(updateArtistDto);
 
@@ -50,6 +50,8 @@ export class ArtistService {
         if (validationErrors.length > 0) {
           throw new HttpException('Something wrong :(', HttpStatus.BAD_REQUEST);
         }
+
+        return await this.databaseService.updateArtist(artist.id, dto);
       }
       throw new HttpException(
         `Artist with ${id} was not found in database`,
@@ -59,13 +61,12 @@ export class ArtistService {
     throw new HttpException('Invalid id (not uuid)', HttpStatus.BAD_REQUEST);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const artist = this.databaseService.getArtistById(id);
+      const artist = await this.databaseService.getArtistById(id);
       if (artist) {
-        this.databaseService.deleteArtist(id);
-        return;
+        return await this.databaseService.deleteArtist(id);
       }
       throw new HttpException(
         `Artist with ${id} was not found in database`,
