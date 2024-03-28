@@ -21,10 +21,7 @@ export class AlbumController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(
-    @Body(new ValidationPipe({ whitelist: true }))
-    createAlbumDto: CreateAlbumDto,
-  ) {
+  create(@Body() createAlbumDto: CreateAlbumDto) {
     return this.albumService.create(createAlbumDto);
   }
 
@@ -39,11 +36,7 @@ export class AlbumController {
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id,
-    @Body(new ValidationPipe({ whitelist: true }))
-    updateAlbumDto: UpdateAlbumDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
     return this.albumService.update(id, updateAlbumDto);
   }
 

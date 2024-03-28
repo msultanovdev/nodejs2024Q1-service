@@ -21,10 +21,7 @@ export class UserController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(
-    @Body(new ValidationPipe({ whitelist: true }))
-    createUserDto: CreateUserDto,
-  ) {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
@@ -39,11 +36,7 @@ export class UserController {
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id,
-    @Body(new ValidationPipe({ whitelist: true }))
-    updateUserDto: UpdateUserDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 

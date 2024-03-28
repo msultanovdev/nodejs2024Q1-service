@@ -29,18 +29,17 @@ export class AlbumService {
       }
     }
 
-    const album = this.databaseService.createAlbum(dto);
-    return album;
+    return await this.databaseService.createAlbum(dto);
   }
 
-  getAll() {
-    return this.databaseService.getAllAlbums();
+  async getAll() {
+    return await this.databaseService.getAllAlbums();
   }
 
-  getOne(id: string) {
+  async getOne(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const album = this.databaseService.getAlbumById(id);
+      const album = await this.databaseService.getAlbumById(id);
       if (album) return album;
       throw new HttpException(
         `Artist with ${id} was not found`,
@@ -78,13 +77,12 @@ export class AlbumService {
     throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const album = this.databaseService.getAlbumById(id);
+      const album = await this.databaseService.getAlbumById(id);
       if (album) {
-        this.databaseService.deleteAlbum(id);
-        return;
+        return await this.databaseService.deleteAlbum(id);
       }
       throw new HttpException(
         `Artist with ${id} was not found`,

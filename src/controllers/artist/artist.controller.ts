@@ -21,11 +21,8 @@ export class ArtistController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(
-    @Body(new ValidationPipe({ whitelist: true }))
-    createArtirstDto: CreateArtistDto,
-  ) {
-    return this.artistService.create(createArtirstDto);
+  create(@Body() createArtistDto: CreateArtistDto) {
+    return this.artistService.create(createArtistDto);
   }
 
   @Get()
@@ -39,11 +36,7 @@ export class ArtistController {
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id,
-    @Body(new ValidationPipe({ whitelist: true }))
-    updateArtistDto: UpdateArtistDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
     return this.artistService.update(id, updateArtistDto);
   }
 

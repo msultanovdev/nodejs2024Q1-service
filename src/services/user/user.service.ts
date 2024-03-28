@@ -52,11 +52,10 @@ export class UserService {
       const user = await this.databaseService.getUserById(id);
       if (user) {
         if (dto.oldPassword === user.password) {
-          const res = await this.databaseService.updateUser(
+          return await this.databaseService.updateUser(
             user.id,
             dto.newPassword,
           );
-          return res;
         }
         throw new HttpException('Invalid password', HttpStatus.FORBIDDEN);
       }

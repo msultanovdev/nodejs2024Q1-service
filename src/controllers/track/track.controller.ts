@@ -21,10 +21,7 @@ export class TrackController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(
-    @Body(new ValidationPipe({ whitelist: true }))
-    createTrackDto: CreateTrackDto,
-  ) {
+  create(@Body() createTrackDto: CreateTrackDto) {
     return this.trackService.create(createTrackDto);
   }
 
@@ -39,11 +36,7 @@ export class TrackController {
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id,
-    @Body(new ValidationPipe({ whitelist: true }))
-    updateTrackDto: UpdateTrackDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
     return this.trackService.update(id, updateTrackDto);
   }
 

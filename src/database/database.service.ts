@@ -43,7 +43,13 @@ export class DatabaseService {
     const newUser = await this.prismaService.user.create({
       data: createUserDto,
     });
-    return formatUser(newUser);
+    return {
+      id: newUser.id,
+      login: newUser.login,
+      version: newUser.version,
+      createdAt: new Date(newUser.createdAt).getTime(),
+      updatedAt: new Date(newUser.updatedAt).getTime(),
+    };
   }
   async updateUser(id: string, newPass: string) {
     try {
@@ -54,7 +60,13 @@ export class DatabaseService {
           version: { increment: 1 },
         },
       });
-      return formatUser(user);
+      return {
+        id: user.id,
+        login: user.login,
+        version: user.version,
+        createdAt: new Date(user.createdAt).getTime(),
+        updatedAt: new Date(user.updatedAt).getTime(),
+      };
     } catch (e) {
       return null;
     }
@@ -281,8 +293,4 @@ export class DatabaseService {
       return null;
     }
   }
-}
-
-function formatUser(newUser: any) {
-  throw new Error('Function not implemented.');
 }
