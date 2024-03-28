@@ -18,18 +18,18 @@ export class UserService {
       const message = 'Something wrong :(';
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
-    const newUser = this.databaseService.createUser(dto);
+    const newUser = await this.databaseService.createUser(dto);
     return newUser;
   }
 
-  findAll() {
-    return this.databaseService.getAllUsers();
+  async findAll() {
+    return await this.databaseService.getAllUsers();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const user = this.databaseService.getUserById(id);
+      const user = await this.databaseService.getUserById(id);
       if (user) return user;
       const message = `User with ${id} wasn't found in database`;
       throw new HttpException(message, HttpStatus.NOT_FOUND);
@@ -52,7 +52,10 @@ export class UserService {
       const user = await this.databaseService.getUserById(id);
       if (user) {
         if (dto.oldPassword === user.password) {
-          const res = this.databaseService.updateUser(user.id, dto.newPassword);
+          const res = await this.databaseService.updateUser(
+            user.id,
+            dto.newPassword,
+          );
           return res;
         }
         throw new HttpException('Invalid password', HttpStatus.FORBIDDEN);
@@ -65,12 +68,12 @@ export class UserService {
     );
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const user = this.databaseService.getUserById(id);
+      const user = await this.databaseService.getUserById(id);
       if (user) {
-        this.databaseService.deleteUser(id);
+        await this.databaseService.deleteUser(id);
         return;
       }
       throw new HttpException(
