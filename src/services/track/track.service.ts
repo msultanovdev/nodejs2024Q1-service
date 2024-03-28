@@ -17,18 +17,38 @@ export class TrackService {
     if (validationErrors.length > 0) {
       throw new HttpException('Something wrong :(', HttpStatus.BAD_REQUEST);
     }
-    const track = this.databaseService.createTrack(dto);
-    return track;
+    const { artistId } = dto;
+    if (artistId) {
+      const artist = await this.databaseService.getArtistById(artistId);
+      if (!artist) {
+        throw new HttpException(
+          'Artist is not existing',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    const { albumId } = dto;
+    if (albumId) {
+      const album = await this.databaseService.getAlbumById(albumId);
+      if (!album) {
+        throw new HttpException(
+          'Album is not existing',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    return await this.databaseService.createTrack(dto);
   }
 
-  getAll() {
-    return this.databaseService.getAllTracks();
+  async getAll() {
+    return await this.databaseService.getAllTracks();
   }
 
-  getOne(id: string) {
+  async getOne(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const track = this.databaseService.getTrackById(id);
+      const track = await this.databaseService.getTrackById(id);
       if (track) return track;
       throw new HttpException(
         `Track with ${id} was not found`,
@@ -50,6 +70,26 @@ export class TrackService {
         if (validationErrors.length > 0) {
           throw new HttpException('Something wrong :(', HttpStatus.BAD_REQUEST);
         }
+        const { artistId } = dto;
+        if (artistId) {
+          const artist = await this.databaseService.getArtistById(artistId);
+          if (!artist) {
+            throw new HttpException(
+              'Artist is not existing',
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+        }
+        const { albumId } = dto;
+        if (albumId) {
+          const album = await this.databaseService.getAlbumById(albumId);
+          if (!album) {
+            throw new HttpException(
+              'Album is not existing',
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+        }
         return await this.databaseService.updateTrack(track.id, dto);
       }
       throw new HttpException(
@@ -60,13 +100,12 @@ export class TrackService {
     throw new HttpException('Invalid id (not uuid)', HttpStatus.BAD_REQUEST);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const track = this.databaseService.getTrackById(id);
+      const track = await this.databaseService.getTrackById(id);
       if (track) {
-        this.databaseService.deleteTrack(id);
-        return;
+        return await this.databaseService.deleteTrack(id);
       }
       throw new HttpException(
         `Track with ${id} was not found`,
